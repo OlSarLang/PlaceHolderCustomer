@@ -9,7 +9,7 @@
     tools:context=".MapsActivity" >
 
     <fragment
-        class="com.example.left4candy.placeholdercustomer.MapsFragment"
+        android:name="com.example.left4candy.placeholdercustomer.MapsFragment"
         android:id="@+id/maps_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

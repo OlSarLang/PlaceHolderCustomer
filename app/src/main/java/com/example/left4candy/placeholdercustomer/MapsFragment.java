@@ -3,6 +3,7 @@ package com.example.left4candy.placeholdercustomer;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -19,7 +20,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,20 +35,24 @@ import static com.example.left4candy.placeholdercustomer.Constants.MAPVIEW_BUNDL
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "MapsFragment";
 
-    String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    //String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     String userName = "Not found";
 
     private DatabaseReference mDatabase;
     private StorageReference profileImageRef;
     private DatabaseReference userInfoRef;
 
-    public List<AdminUser> userList;
+    public List<UserInfo> userList;
 
     private MapView mMapView;
     public LatLngBounds bounds = new LatLngBounds(new LatLng(55.978793,10.336775), new LatLng(65.833435, 25.713965));
 
     public static MapsFragment newInstance(){
         return new MapsFragment();
+    }
+
+    public MapsFragment(){
+
     }
 
     @Override
@@ -60,19 +64,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         userList = new ArrayList<>();
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("users");
-        userInfoRef = mDatabase.child("userinfo");
 
-        userInfoRef.addValueEventListener(new ValueEventListener() {
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null){
-                    AdminUser aU = dataSnapshot.getValue(AdminUser.class);
-                    userList.add(aU);
-                    Log.d(TAG, aU.getUserName() +"   " + aU.getLocation() +"    "+ aU.isPrivacy());
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    UserInfo aU = ds.getValue(UserInfo.class);
+                    if(!aU.isPrivacy()){
+                        userList.add(aU);
+                        Log.d(TAG, "username : " + aU.getUserName() + "    phoneNumber: " + aU.getPhoneNumber());
+                    }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -80,7 +87,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.maps_fragment, container, false);;
+        View view = inflater.inflate(R.layout.maps_fragment, container, false);
         mMapView = view.findViewById(R.id.mapView);
 
         initGoogleMap(savedInstanceState);
@@ -151,6 +158,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         map.setMinZoomPreference(5);
         map.moveCamera(CameraUpdateFactory.newLatLng(bounds.getCenter()));
 
+        map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         map.setMyLocationEnabled(true);
     }
 
