@@ -2,4 +2,8 @@
     <string name="google_maps_API_key">AIzaSyCfoWgekgnK9ARKy5OzGCOXgqDNwTsgkFE</string>
     <string name="app_name">PlaceHolderCustomer</string>
     <string name="title_activity_maps">Map</string>
+
+    <string name="Contact">Contact</string>
+    <string name="Email">E-mail</string>
+    <string name="Phone">Phone number</string>
 </resources>

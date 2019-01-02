@@ -11,6 +11,7 @@ public class UserInfo {
     private boolean privacy;
     private String phoneNumber;
     private String email;
+    private String userUid;
 
 
     public UserInfo(){
@@ -23,6 +24,10 @@ public class UserInfo {
         this.userName = userName;
         this.privacy = privacy;
     }
+
+    public String getUserUid() { return userUid; }
+
+    public void setUserUid(String userUid) { this.userUid = userUid; }
 
     public double getLatitude() { return latitude; }
     public void setLatitude(double latitude) { this.latitude = latitude; }
